@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Destinos Recomendados</h1>
+        
+        {% if erro %}
+            <div class="alert alert-danger text-center">
+                {{ erro }}
+            </div>
+            <div class="text-center mt-4">
+                <a href="/" class="btn btn-primary">Voltar</a>
+            </div>
+        {% else %}
+            <!-- Gráfico de Orçamento Médio -->
+            <div class="mb-4">
+                <h3 class="text-center">Orçamento Médio por Destino</h3>
+                <canvas id="graficoOrcamento"></canvas>
+            </div>
+
+            <!-- Mapa Interativo -->
+            <div class="mb-4">
+                <h3 class="text-center">Mapa dos Destinos</h3>
+                <div id="map" style="height: 500px;"></div>
+            </div>
+
+            <!-- Cards dos Destinos -->
+            <div class="row">
+                {% for destino in resultados %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <!-- Exibe a imagem do destino -->
+                            <img src="{{ destino['imagem_url'] or '/static/images/default.jpg' }}" 
+                                 class="card-img-top" 
+                                 alt="Imagem de {{ destino['Destino'] }}" 
+                                 style="height: 200px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ destino['Destino'] }}</h5>
+                                <p class="card-text"><strong>Categoria:</strong> {{ destino['Categoria'] }}</p>
+                                <p class="card-text"><strong>Orçamento Médio:</strong> R$ {{ destino['Orçamento Médio'] }}</p>
+                                <p class="card-text"><strong>Atividades:</strong> {{ destino['Atividades'] }}</p>
+                                <p class="card-text"><strong>Melhor Época:</strong> {{ destino['Melhor Época'] }}</p>
+                                <p class="card-text"><strong>Clima:</strong> {{ destino['Clima'] }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="text-center mt-4">
+                <a href="/" class="btn btn-primary">Voltar</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        {% if resultados %}
+        const destinos = {{ resultados | tojson }};
+        const labels = destinos.map(destino => destino.Destino);
+        const data = destinos.map(destino => destino["Orçamento Médio"]);
+
+        // Gráfico de Orçamento Médio
+        const ctx = document.getElementById('graficoOrcamento').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Orçamento Médio (R$)',
+                    data: data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Mapa Interativo
+        const map = L.map('map').setView([0, 0], 2); // Configuração inicial do mapa
+
+        // Adicionar o tile layer (mapa base)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        // Adicionar marcadores no mapa
+        const geocodingApiKey = "6d84f9b22da147a7b13ccf7b05c583c3";
+        destinos.forEach(destino => {
+            const geocodingUrl = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(destino.Destino)}&key=${geocodingApiKey}`;
+            fetch(geocodingUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.results.length > 0) {
+                        const location = data.results[0].geometry;
+                        L.marker([location.lat, location.lng])
+                            .addTo(map)
+                            .bindPopup(`<b>${destino.Destino}</b><br>${destino.Atividades}`);
+                    }
+                })
+                .catch(error => console.error("Erro ao buscar localização:", error));
+        });
+        {% endif %}
+    </script>
+</body>
+</html>

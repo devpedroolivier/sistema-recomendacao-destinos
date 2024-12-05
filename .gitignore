@@ -1,0 +1,17 @@
+# Ignorar arquivos sensíveis e temporários
+*.pyc
+__pycache__/
+.env
+*.db
+
+# Ignorar dependências do Python
+venv/
+*.log
+
+# Configurações de IDEs
+.vscode/
+.idea/
+
+# Ignorar arquivos do sistema operacional
+.DS_Store
+Thumbs.db
