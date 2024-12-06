@@ -32,4 +32,5 @@ jobs:
       # Etapa 4: Executar os testes
       - name: Run tests
         run: |
-          pytest --maxfail=5 --disable-warnings
+          pytest --maxfail=1 --disable-warnings --tb=short
+
