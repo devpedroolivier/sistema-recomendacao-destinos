@@ -9,10 +9,13 @@
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Resultados de Voos</h1>
-
+        
         {% if erro %}
             <div class="alert alert-danger text-center">
                 {{ erro }}
+            </div>
+            <div class="text-center mt-4">
+                <a href="/buscar-voos" class="btn btn-primary">Nova Busca</a>
             </div>
         {% else %}
             <div class="row">
@@ -21,17 +24,21 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">ID da Oferta: {{ voo['id'] }}</h5>
-                                <p><strong>Preço:</strong> {{ voo['preco'] }} {{ voo['moeda'] }}</p>
-                                <p><strong>Duração Total:</strong> {{ voo['duracao_total'] }}</p>
+                                <p class="card-text"><strong>Preço:</strong> {{ voo['preco'] }} {{ voo['moeda'] }}</p>
+                                <p class="card-text"><strong>Duração Total:</strong> {{ voo['duracao_total'] }}</p>
                                 <h6>Segmentos:</h6>
-                                <ul>
+                                <ul class="list-group list-group-flush">
                                     {% for segmento in voo['segmentos'] %}
-                                        <li>
+                                        <li class="list-group-item">
                                             <strong>{{ segmento['partida'] }} -> {{ segmento['chegada'] }}</strong><br>
-                                            Horário: {{ segmento['horario_partida'] }} -> {{ segmento['horario_chegada'] }}<br>
-                                            Companhia: {{ segmento['companhia'] }}<br>
-                                            Duração: {{ segmento['duracao'] }}<br>
-                                            Paradas: {{ segmento['paradas'] }}
+                                            <small>
+                                                <strong>Horário:</strong> 
+                                                {{ segmento['horario_partida'] | datetimeformat }} -> {{ segmento['horario_chegada'] | datetimeformat }}<br>
+
+                                                <strong>Companhia:</strong> {{ segmento['companhia'] }}<br>
+                                                <strong>Duração:</strong> {{ segmento['duracao'] }}<br>
+                                                <strong>Paradas:</strong> {{ segmento['paradas'] }}
+                                            </small>
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -40,10 +47,10 @@
                     </div>
                 {% endfor %}
             </div>
+            <div class="text-center mt-4">
+                <a href="/buscar-voos" class="btn btn-primary">Nova Busca</a>
+            </div>
         {% endif %}
-        <div class="text-center mt-4">
-            <a href="/buscar-voos" class="btn btn-primary">Nova Busca</a>
-        </div>
     </div>
 </body>
 </html>

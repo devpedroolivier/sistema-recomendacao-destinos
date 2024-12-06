@@ -9,21 +9,27 @@
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Buscar Voos</h1>
-        <form action="/resultados-voos" method="POST">
+
+        <!-- Formulário para buscar voos -->
+        <form method="POST" action="/resultados-voos">
             <div class="mb-3">
-                <label for="origem" class="form-label">Aeroporto de Origem (Código IATA)</label>
-                <input type="text" class="form-control" id="origem" name="origem" placeholder="Ex: GRU" required>
+                <label for="origem" class="form-label">Origem (Cidade ou Código IATA)</label>
+                <input type="text" class="form-control" id="origem" name="origem" placeholder="Ex.: São Paulo ou GRU" required>
             </div>
             <div class="mb-3">
-                <label for="destino" class="form-label">Aeroporto de Destino (Código IATA)</label>
-                <input type="text" class="form-control" id="destino" name="destino" placeholder="Ex: JFK" required>
+                <label for="destino" class="form-label">Destino (Cidade ou Código IATA)</label>
+                <input type="text" class="form-control" id="destino" name="destino" placeholder="Ex.: Nova York ou JFK" required>
             </div>
             <div class="mb-3">
                 <label for="data_partida" class="form-label">Data de Partida</label>
-                <input type="date" class="form-control" id="data_partida" name="data_partida" required>
+                <input type="date" class="form-control" id="data_partida" name="data_partida" >
             </div>
-            <button type="submit" class="btn btn-primary">Buscar Voos</button>
+            <button type="submit" class="btn btn-primary w-100">Buscar Voos</button>
         </form>
+
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-secondary">Voltar ao Menu</a>
+        </div>
     </div>
 </body>
 </html>

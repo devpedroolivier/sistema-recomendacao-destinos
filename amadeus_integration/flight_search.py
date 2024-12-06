@@ -7,6 +7,14 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from amadeus_integration.auth import autenticar
 
 
+def formatar_duracao(duracao):
+    """
+    Converte a duração no formato ISO8601 (PT10H25M) para um formato legível (10h 25m).
+    """
+    duracao = duracao.replace("PT", "").replace("H", "h ").replace("M", "m")
+    return duracao.strip()
+
+
 def buscar_voos(origem, destino, data_partida):
     """
     Função para buscar voos utilizando a API Amadeus.
@@ -40,7 +48,7 @@ def buscar_voos(origem, destino, data_partida):
                 "id": voo["id"],
                 "preco": voo["price"]["total"],
                 "moeda": voo["price"]["currency"],
-                "duracao_total": voo["itineraries"][0]["duration"],
+                "duracao_total": formatar_duracao(voo["itineraries"][0]["duration"]),
                 "segmentos": []
             }
             for segmento in voo["itineraries"][0]["segments"]:
@@ -50,7 +58,7 @@ def buscar_voos(origem, destino, data_partida):
                     "horario_partida": segmento["departure"]["at"],
                     "horario_chegada": segmento["arrival"]["at"],
                     "companhia": segmento["carrierCode"],
-                    "duracao": segmento["duration"],
+                    "duracao": formatar_duracao(segmento["duration"]),
                     "paradas": segmento.get("numberOfStops", 0),
                 })
             voos_formatados.append(detalhes_voo)
