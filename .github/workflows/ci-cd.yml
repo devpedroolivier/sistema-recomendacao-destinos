@@ -13,25 +13,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Etapa 1: Checkout do repositório
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Etapa 2: Configurar o Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9  # Certifique-se de usar a versão correta para o seu projeto
+          python-version: '3.9'
 
+      # Etapa 3: Instalar dependências
       - name: Install dependencies
         run: |
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          else
-            echo "Arquivo requirements.txt não encontrado."
-            exit 1
-          fi
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-
+      # Etapa 4: Executar os testes
       - name: Run tests
         run: |
-          # Adicione seus testes aqui, como verificação de imports
-          python -m unittest discover
+          pytest --maxfail=5 --disable-warnings
